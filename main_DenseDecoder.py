@@ -76,7 +76,7 @@ def save_encoder_outputs_and_predictions(QuAttnNet, params, train_ds, current_ds
     doc.update({"DECODER_LAYER_DIMS": FLAGS.layer_dims})
     layer_dims = '_'.join(FLAGS.layer_dims)
     enc_outputs, preds_unnorm, true_labels = get_predictions_and_encoder_outputs(QuAttnNet,params, train_ds, regularization, suppress_k)
-    SAVING_PATH = "SymbolicRegressionWithDenseDecoder/EncoderOutputsAndModelsPrediction/" \
+    SAVING_PATH = "PolynomialRegression/EncoderOutputsAndModelsPrediction/" \
             + current_ds + f"/{FLAGS.num_encode_layers}el/{int(FLAGS.shots/1000)}kshots"
     if len(FILENAME) == 0:
         FILENAME = f"/InputForSymbolicRegressionRGZN{regularization}_M{FLAGS.shots}_epochs{FLAGS.epochs}"\
