@@ -1,4 +1,7 @@
 # Identifying optical nonclassicality
-Nonclassicality, defined via the Glauber-Sudarshan $P$ representation, is a fundamental resource for optical quantum devices as any nonclassical state creates entanglement at a beamsplitter.
+This repository provides tools for analyzing optical nonclassicality based on the *Glauber–Sudarshan P representation*, a quasiprobability distribution that describes the quantum state of light in terms of coherent states. Classical optical fields correspond to positive, well-behaved $P$ functions, while nonclassical states exhibit nonpositive or singular $P$ functions, revealing genuinely quantum properties such as squeezing, antibunching, or entanglement.
 
-This library provides you with the library to set up and train the algebraic classifier --- abbreviated wih **AlCla** --- that can be trained on a specifc dataset to learn a tailored nonclassicality criterion. Importantly, the criterion learned by the model may not be confused with a sufficient nonclassicality witness. Instead, the criterion is an indicator for whether a state in nonclassical or not.
+The included code enables the setup and training of the algebraic classifier --- abbreviated with **AlCla** ---, a machine learning–based method developed to identify nonclassicality from data. The model is fully interpretable in the sense that the learned nonclassicality criterion can be extracted after training. Importantly, the criterion learned by the model may not be confused with a sufficient nonclassicality witness. Instead, the criterion is an **indicator** for whether a state in nonclassical or not.
+
+The classifier has an encoder-decoder structure: The encoder learns to compute moments that are relevant for the classifcation whereas the decoder constructs a polynomial of these moments.
+As an alternative model, we replaced the algebraic decoder with a dense feed-forward neural network. The respective model is called Dense Decoder in the code.
