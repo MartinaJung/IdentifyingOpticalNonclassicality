@@ -23,6 +23,7 @@ dependencies:
   - colorama=0.4.6=py313h06a4308_0
   - comm=0.2.3=pyhe01879c_0
   - contourpy=1.3.1=py313hdb19cb5_0
+  - coverage=7.11.0=py313hee96239_1
   - cpython=3.13.7=py313hd8ed1ab_100
   - cycler=0.11.0=pyhd3eb1b0_0
   - cyrus-sasl=2.1.28=h1110e0f_3
@@ -214,6 +215,7 @@ dependencies:
   - pyqt6-sip=13.9.1=py313h6ce4db3_2
   - pysr=1.5.9=pyhd8ed1ab_1
   - pytest=9.0.2=pyhcf101f3_0
+  - pytest-cov=7.0.0=pyhcf101f3_1
   - python=3.13.7=h7e8bc2b_100_cp313
   - python-dateutil=2.9.0post0=py313h06a4308_2
   - python-gil=3.13.7=h4df99d1_100
