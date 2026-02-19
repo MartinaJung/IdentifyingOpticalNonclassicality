@@ -1,5 +1,5 @@
 flax==0.10.2
-hdf5==1.14.5
+h5py==1.14.5
 ipykernel==6.31.0
 ipython==9.7.0
 ipython_pygments_lexers==1.1.1
