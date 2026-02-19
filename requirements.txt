@@ -15,10 +15,6 @@ opt_einsum==3.3.0
 optax==0.2.6
 pandas==2.3.3
 pip==25.2
-python-dateutil==2.9.0
-python-gil==3.13.7
-python-tzdata==2025.2
-python_abi==3.13
 pytorch==2.5.1
 scikit-learn==1.7.2
 scipy==1.16.2
