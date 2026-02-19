@@ -16,7 +16,7 @@ jobs:
         python -m pip install pytest
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Run tests and collect coverage
-      run: pytest --cov ./tests --cov-report=xml
+      run: pytest --cov-report xml --cov ./tests
 
     - name: upload coverage reports to codecov
       uses: codecov/codecov-action@v5
