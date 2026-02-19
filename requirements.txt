@@ -1,3 +1,7 @@
+python==3.13.7
+jax==0.7.2
+jaxlib==0.7.2
+jaxtyping==0.3.3
 flax==0.10.2
 ipykernel==6.30.1
 ipython==9.6.0
@@ -13,7 +17,6 @@ opt_einsum==3.3.0
 optax==0.2.6
 pandas==2.3.3
 pip==25.2
-python==3.13.7
 python-dateutil==2.9.0
 python-gil==3.13.7
 python-tzdata==2025.2
@@ -30,9 +33,6 @@ drawsvg==2.4.0
 equinox==0.13.1
 exqalibur==1.0.0
 idna==3.10
-jax==0.7.2
-jaxlib==0.7.2
-jaxtyping==0.3.3
 latexcodec==3.0.1
 matplotlib==3.10.6
 mkl-service==2.5.2
