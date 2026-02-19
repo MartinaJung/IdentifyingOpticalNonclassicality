@@ -11,12 +11,11 @@ key = jax.random.PRNGKey(seed=0)
 
 
 class PreSymbolicRegressionNet(nn.Module):
-    M : int # number of snapshots
     num_modes : int # number of modes
     num_layers : int # order of highest correlation
     kernel_init : Initializer = jax.nn.initializers.glorot_normal()
     
-    def encode(self, k, x, s, layer):
+    def encode(self, k:jnp.array, x:jnp.array, s:jnp.array, layer:int) -> (jnp.array, jnp.array):
         """ 
         input:
             k = matrix of the current step, has dim (d_h, d_x, d_x)
@@ -27,14 +26,14 @@ class PreSymbolicRegressionNet(nn.Module):
             s = sum of the current layer
         """
         if layer == 0:
-            s = jnp.einsum('ne,...na,...ea -> ...na', k,x,x) # has shape (d_h, d_x, M)
+            s = jnp.einsum('ne,...na,...ea -> ...na', k,x,x) # has shape (d_h, d_x, num_samples)
             y = jnp.mean(s, axis=-1) # has shape (d_h, d_x)
         else:
             s = jnp.einsum('ne,...na,...ea -> ...na', k,x,s)
             y = jnp.mean(s, axis=-1)
         return y, s
     
-    def Encoder(self, params,x):
+    def Encoder(self, params:dict , x:jnp.array) -> jnp.array:
         mean = jnp.mean(x, axis=-1)
         y,s = self.encode(k=params['k0'], x=x, s=x, layer=0) # first encoding layer
         correlations = [mean,y]
@@ -43,7 +42,7 @@ class PreSymbolicRegressionNet(nn.Module):
             correlations.append(y)
         return jnp.array(correlations)
     
-    def DenseDecoder(self, params, corrs):
+    def DenseDecoder(self, params:dict, corrs:jnp.array) -> jnp.array:
         ''' 
         input:
             params = dictionary with parameters from which the Decoder only uses weights_decoder and bias_decoder
@@ -60,7 +59,7 @@ class PreSymbolicRegressionNet(nn.Module):
                 x = nn.relu(x)
         return x
         
-    def init_params(self, layers, key, modes, num_encode_layers):
+    def init_params(self, layers:list, key:jnp.array, modes:int, num_encode_layers:int) -> dict:
         if min(modes,num_encode_layers)<1:
             raise ValueError("number of modes and number of encoding layers has to be >=1")
         # encoder init
@@ -78,7 +77,7 @@ class PreSymbolicRegressionNet(nn.Module):
         tmp.update({'weights_decoder': weights_decoder, 'bias_decoder':bias_decoder})         
         return {'params': tmp}
     
-    def __call__(self, params, x):
+    def __call__(self, params:dict, x:jnp.array) -> jnp.array:
         params = params['params']
         corrs = self.Encoder(params,x)
         x = self.DenseDecoder(params,corrs)

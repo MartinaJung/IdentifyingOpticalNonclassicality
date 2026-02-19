@@ -24,7 +24,7 @@ plt.rcParams['font.family'] = "serif"
 #
 ######################################
 
-def load_datasets(current_ds):
+def load_datasets(current_ds:str)->(dict,dict):
     DATASET_PATH = "datasets/" + current_ds
     DATAFILE = f'/{current_ds}_train_{int(FLAGS.shots/1000)}kshots.npz'
     ds = get_h5py_ds(DATASET_PATH+DATAFILE)
@@ -41,20 +41,18 @@ def initialize_model():
     symb_expression, permu, (decoder_fn, try_theta_init) = jaxdecoder(init_x,FLAGS.modes,FLAGS.num_encode_layers)
     print(f'Theta init is {try_theta_init} and the reshuffled theta is {np.array(try_theta_init)[np.array(permu)]}\n')
     print('The used permu is', np.array(permu))
-    QuAttnNet = QuantumAttentionNet(M=FLAGS.shots, 
-                                    num_modes=FLAGS.modes, 
+    QuAttnNet = QuantumAttentionNet(num_modes=FLAGS.modes, 
                                         num_layers=FLAGS.num_encode_layers,
                                         decoder_fn=decoder_fn)
     
     opt, state, params = create_train_state(init_rng, QuAttnNet,
-                            M = FLAGS.shots,
                             num_modes=FLAGS.modes,
                             num_layers=FLAGS.num_encode_layers,
                             learning_rate=FLAGS.learning_rate)
     return opt, state, params, permu, QuAttnNet
 
 
-def save_train_test_ds_as_hdf5(current_ds):
+def save_train_test_ds_as_hdf5(current_ds:str):
     SAVENAME = 'saved_params/' + current_ds + '/train_test_' + current_ds + \
         f"_M{FLAGS.shots}.hdf5"
     try:
@@ -74,7 +72,14 @@ def save_train_test_ds_as_hdf5(current_ds):
 #
 ######################################
 
-def save_predictions(params,permu, classical_accuracy, nonclassical_accuracy, current_ds, regularization, suppress_k, *RESULTS_FILENAME):
+def save_predictions(params:dict,
+                    permu:jnp.array, 
+                    classical_accuracy:jnp.array, 
+                    nonclassical_accuracy:jnp.array, 
+                    current_ds: str, 
+                    regularization: float, 
+                    suppress_k: float, 
+                    *RESULTS_FILENAME:str):
     doc = {"SHOTS": FLAGS.shots, "MINIBATCH_SIZE": FLAGS.batch_size,
         "MODES": FLAGS.modes, "LEARNING_RATE": FLAGS.learning_rate,
         "NUM_ENCODE_LAYERS": FLAGS.num_encode_layers,

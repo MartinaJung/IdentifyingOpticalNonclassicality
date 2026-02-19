@@ -17,7 +17,7 @@ app.parse_flags_with_usage(['.'])
 key = jax.random.PRNGKey(seed=0)
 rng1 = np.random.default_rng(seed=42)
 
-def jax_trunc_poly(x, l, modes, num_encode_layers):
+def jax_trunc_poly(x:jnp.array, l:int, modes:int, num_encode_layers:int) -> jnp.array:
         ''' input:
                 x = flattened list of correlation entries 
                         (encodinglayers + 1)*num_modes for diagonal encoder
@@ -31,7 +31,7 @@ def jax_trunc_poly(x, l, modes, num_encode_layers):
         polys = [[y[m]**i for i in range(1,trunc_dim+1)] for m in range(modes)]   
         return np.pad(np.array(polys), ((0,0),(0, num_encode_layers+1-trunc_dim)), mode='constant', constant_values=-5 )
 
-def jaxdecoder(x, modes, num_encode_layers):
+def jaxdecoder(x:jnp.array, modes:int, num_encode_layers:int) -> (list, list, jnp.array):
     ''' input:
             x = correlations coming from the encoder, have (always) shape 
                     (num_encoding layers, 1, num_modes)

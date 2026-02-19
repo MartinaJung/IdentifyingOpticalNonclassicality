@@ -13,13 +13,12 @@ from polynom_skelleton import *
 key = jax.random.PRNGKey(seed=0)
 
 class QuantumAttentionNet(nn.Module):
-    M : int # number of snapshot
     num_modes : int # number of modes
     num_layers : int # order of highest correlation
     decoder_fn: callable # decoder function used in the decoder
     kernel_init : Initializer = jax.nn.initializers.glorot_normal()
 
-    def encode(self, k, x, s, layer):
+    def encode(self, k:jnp.array, x:jnp.array, s:jnp.array, layer:int) -> (jnp.array, jnp.array):
         """ 
         input:
             k = matrix of the current step, has dim (d_h, d_x, d_x)
@@ -37,7 +36,7 @@ class QuantumAttentionNet(nn.Module):
             y = jnp.mean(s, axis=-1)
         return y, s
     
-    def Encoder(self, params,x):
+    def Encoder(self, params:dict, x:jnp.array) -> jnp.array:
         mean = jnp.mean(x, axis=-1)
         y,s = self.encode(k=params['k0'], x=x, s=x, layer=0)
         correlations = [mean,y]
@@ -46,7 +45,7 @@ class QuantumAttentionNet(nn.Module):
             correlations.append(y)
         return jnp.array(correlations)
     
-    def AlgebraicDecoder(self, params, corrs):
+    def AlgebraicDecoder(self, params:dict, corrs:jnp.array) -> jnp.array:
         ''' 
         input:
             params = dictionary with parameters from which the Decoder only uses theta
@@ -61,7 +60,7 @@ class QuantumAttentionNet(nn.Module):
         h = self.decoder_fn(corrs, theta) + i
         return 1-nn.sigmoid(a*h)
     
-    def init_params(self, key, modes, num_encode_layers):
+    def init_params(self, key:jnp.array, modes:int, num_encode_layers:int) -> dict:
         # encoder init
         w = jnp.array(jnp.eye(modes)) + 1e-3*jax.random.uniform(key,(modes,modes))
         tmp = {f'k{i}': jnp.array(w) for i in range(self.num_layers)}
@@ -75,7 +74,7 @@ class QuantumAttentionNet(nn.Module):
         tmp.update({'theta': initial_thetas, 'intercept': intercept, 'amplify': amplification})
         return tmp
     
-    def __call__(self, params, x):
+    def __call__(self, params:dict, x:jnp.array) -> jnp.array:
         params = params['params']
         corrs = self.Encoder(params,x)
         y = self.AlgebraicDecoder(params, corrs)

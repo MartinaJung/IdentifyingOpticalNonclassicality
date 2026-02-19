@@ -16,7 +16,6 @@ app.parse_flags_with_usage(['.'])
 from model_AlCla import *
 
 # HYPERPARAMETERS
-
 PATIENCE = 10 # Number of epochs with no improvement after which learning rate will be reduced
 COOLDOWN = 0 # Number of epochs to wait before resuming normal operation after the learning rate reduction
 FACTOR = 0.5 # Factor by which to reduce the learning rate
@@ -24,14 +23,14 @@ RTOL = 1e-4 # Relative tolerance for measuring the new optimum
 ACCUMULATION_SIZE = 39 # Number of iterations to accumulate an average value
 
 
-def get_h5py_ds(file):
+def get_h5py_ds(file:str) -> dict:
     data = np.load(file)
     cl_images = data['cl_images']
     ncl_images = data['ncl_images']
     images = np.concatenate((cl_images, ncl_images), axis=0)
     return {'images': images, 'labels': [0]*len(cl_images) + [1]*len(ncl_images)}
 
-def create_train_state(key, QuAttnNet,M, num_modes, num_layers, learning_rate):
+def create_train_state(key:jnp.array, QuAttnNet, num_modes:int, num_layers:int, learning_rate:float):
     params = QuAttnNet.init_params(key,num_modes,num_layers)
     opt = optax.chain(optax.adam(learning_rate),
             contrib.reduce_on_plateau(
@@ -46,7 +45,12 @@ def create_train_state(key, QuAttnNet,M, num_modes, num_layers, learning_rate):
     return opt, opt_state, params
 
 @partial(jax.jit, static_argnames=['QuAttnNet','regularization_strength', 'suppressing_k'])
-def loss_fn(params, images, label, QuAttnNet,regularization_strength, suppressing_k):
+def loss_fn(params:dict, 
+        images:jnp.array, 
+        label:jnp.array, 
+        QuAttnNet,
+        regularization_strength:float, 
+        suppressing_k:float) -> (jnp.array, jnp.array):
         logits = QuAttnNet({"params": params}, images)
         def true_fc(l):
             return jnp.mean(optax.sigmoid_binary_cross_entropy(logits=jnp.log(l/(1-l)+1e-6), labels=label))
@@ -60,7 +64,12 @@ def loss_fn(params, images, label, QuAttnNet,regularization_strength, suppressin
         return loss, logits
 
 @partial(jax.jit, static_argnames=['QuAttnNet','regularization_strength', 'suppressing_k'])
-def apply_model(params, images, label, QuAttnNet, regularization_strength, suppressing_k):
+def apply_model(params:dict, 
+        images:jnp.array, 
+        label:jnp.array, 
+        QuAttnNet, 
+        regularization_strength:float, 
+        suppressing_k:float) -> (jnp.array, jnp.array,jnp.array,jnp.array):
     " compute gradients, loss (binary cross entropy) and accuracy "    
     grad_fn = jax.value_and_grad(loss_fn, has_aux=True)
     (loss, logits), grads = grad_fn(params, images, label, QuAttnNet, regularization_strength, suppressing_k)
@@ -68,12 +77,12 @@ def apply_model(params, images, label, QuAttnNet, regularization_strength, suppr
     return grads, loss, accuracy, logits
 
 @partial(jax.jit, static_argnames=['opt'])
-def update_model(params, opt, opt_state, grads, accuracy):
+def update_model(params:dict, opt, opt_state, grads:jnp.array, accuracy:jnp.array):
     updates, opt_state = opt.update(grads, opt_state, params, value=accuracy)
     params = optax.apply_updates(params, updates)
     return params, opt_state
 
-def get_train_test_set(ds, rng, ratio):
+def get_train_test_set(ds:dict, rng:jnp.array, ratio:float) -> (dict, dict):
     ds_size = len(ds['images'])
     perm = jax.random.permutation(rng, ds_size)
     
@@ -93,7 +102,14 @@ def get_train_test_set(ds, rng, ratio):
     test_dataset = {'images': test_images, 'labels': test_labels}
     return train_dataset, test_dataset
 
-def train_test_epoch(opt, state,  QuAttnNet,params, train_ds, rng, phase, regularization_strength, suppressing_k):
+def train_test_epoch(opt, state, 
+                    QuAttnNet, 
+                    params:dict, 
+                    train_ds:dict, 
+                    rng:jnp.array, 
+                    phase:str, 
+                    regularization_strength:float, 
+                    suppressing_k:float):
     """ If phase =='test'
             output: loss, accuracy
         If phase =='train'
@@ -151,7 +167,11 @@ def train_test_epoch(opt, state,  QuAttnNet,params, train_ds, rng, phase, regula
         test_accuracy = np.mean(epoch_accuracy)
         return test_loss, test_accuracy    
 
-def get_prediction_distribution(QuAttnNet, params, train_ds, regularization_strength, suppressing_k):
+def get_prediction_distribution(QuAttnNet, 
+                            params:dict, 
+                            train_ds:dict, 
+                            regularization_strength:float, 
+                            suppressing_k:float) -> (jnp.array,jnp.array):
     classicals_prediction = []
     non_classicals_prediction = []
     labels = jnp.array(train_ds['labels'])
@@ -171,7 +191,11 @@ def get_prediction_distribution(QuAttnNet, params, train_ds, regularization_stre
             non_classicals_prediction.append(jnp.mean(logits))
     return jnp.array(classicals_prediction), jnp.array(non_classicals_prediction)
 
-def get_predictions_and_encoder_outputs(QuAttnNet,best_params, train_ds, regularization_strength, suppressing_k):
+def get_predictions_and_encoder_outputs(QuAttnNet,
+                                        best_params:dict, 
+                                        train_ds:dict, 
+                                        regularization_strength:float, 
+                                        suppressing_k:float) -> (jnp.array,jnp.array,jnp.array):
     encoder_outputs = []
     predictions = []
     true_labels = []
@@ -182,4 +206,4 @@ def get_predictions_and_encoder_outputs(QuAttnNet,best_params, train_ds, regular
         encoder_outputs.append(y[:,0])
         logits_unnormalized = QuAttnNet.DenseDecoder(best_params,y)
         predictions.append(jnp.mean(logits_unnormalized))
-    return jnp.array(encoder_outputs), jnp.array(predictions), true_labels
+    return jnp.array(encoder_outputs), jnp.array(predictions), jnp.array(true_labels)
