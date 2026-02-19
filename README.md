@@ -3,7 +3,7 @@ This repository provides tools for analyzing optical nonclassicality based on th
 The included Python code enables the setup and training of the algebraic classifier - abbreviated with **AlCla** -, a machine learning–based method developed to identify nonclassicality from data. The model is fully interpretable in the sense that the learned nonclassicality criterion can be extracted after training. Importantly, the criterion learned by the model may not be confused with a sufficient nonclassicality witness. Instead, the criterion is an indicator for whether a state in nonclassical or not.
 
 
-<img src="./img/VisualAbstract.png" alt="Visual abstract" style="height: 400px;"/>
+<img src="./img/VisualAbstract.png" alt="Visual abstract" style="height: 300px;"/>
 
 ---------------------------------------------------------------------------
 
