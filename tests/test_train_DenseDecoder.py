@@ -34,13 +34,11 @@ def test_h5py_ds(ds):
     assert jnp.array(train_ds['labels']).shape[0]==jnp.array(train_ds['images']).shape[0]
 
 def test_create_train_state():
-    QuAttnNet = PreSymbolicRegressionNet(M=FLAGS.shots, 
-                                    num_modes=FLAGS.modes, 
+    QuAttnNet = PreSymbolicRegressionNet(num_modes=FLAGS.modes, 
                                     num_layers=FLAGS.num_encode_layers,
                                     )
     
     opt, state, params = create_train_state(init_rng, QuAttnNet,
-                           M = FLAGS.shots,
                            num_modes=FLAGS.modes,
                            num_layers=FLAGS.num_encode_layers,
                            learning_rate=FLAGS.learning_rate)
@@ -72,12 +70,10 @@ def test_hyperparams():
 
 @pytest.fixture
 def optimizer_state():
-    QuAttnNet = PreSymbolicRegressionNet(M=FLAGS.shots, 
-                                    num_modes=FLAGS.modes, 
+    QuAttnNet = PreSymbolicRegressionNet(num_modes=FLAGS.modes, 
                                     num_layers=FLAGS.num_encode_layers,
                                    )
     opt, state, params = create_train_state(init_rng, QuAttnNet,
-                           M = FLAGS.shots,
                            num_modes=FLAGS.modes,
                            num_layers=FLAGS.num_encode_layers,
                            learning_rate=FLAGS.learning_rate)

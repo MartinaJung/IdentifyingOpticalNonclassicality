@@ -37,10 +37,10 @@ key = jax.random.PRNGKey(seed=0)
 def test_params_init_dense_decoder(dx,L,layers):
     if min(dx,L)<1:
         with pytest.raises(ValueError,match="number of modes and number of encoding layers has to be >=1"):
-            DenseDecoder = PreSymbolicRegressionNet(1000, dx,L)
+            DenseDecoder = PreSymbolicRegressionNet(dx,L)
             params = DenseDecoder.init_params(layers,key, dx,L)
     else:
-        DenseDecoder = PreSymbolicRegressionNet(1000, dx,L)
+        DenseDecoder = PreSymbolicRegressionNet(dx,L)
         params = DenseDecoder.init_params(layers,key, dx,L)
         for i in range(L):
             assert jnp.array(params['params'][f'k{i}']).shape == (dx, dx)
@@ -60,7 +60,7 @@ def dense_decoder(dx_L_layers):
     ''' Creates fresh instance of the QuantumAttentionNet '''
     dx=dx_L_layers[0]
     L=dx_L_layers[1]
-    return PreSymbolicRegressionNet(M=1000, num_modes=dx, num_layers=L)
+    return PreSymbolicRegressionNet(num_modes=dx, num_layers=L)
 
 
 def test_layers_of_DenseDecoder(dense_decoder,dx_L_layers):

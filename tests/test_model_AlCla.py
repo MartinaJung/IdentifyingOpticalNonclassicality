@@ -70,7 +70,7 @@ def test_params_init(dx, L):
     else:
         init_x = symbols(f'x:{dx*(L+1)}', positive=True)
         symb_expression, permu, (decoder_fn, try_theta_init) = jaxdecoder(init_x,dx,L)
-        QuAttnNet = QuantumAttentionNet(1000, dx,L,decoder_fn)
+        QuAttnNet = QuantumAttentionNet(dx,L,decoder_fn)
         params = QuAttnNet.init_params(key, dx,L)
         for i in range(L):
             assert jnp.array(params[f'k{i}']).shape == (dx, dx)
@@ -89,7 +89,7 @@ def quantum_attention_net(dx_L):
     L=dx_L[1]
     init_x = symbols(f'x:{dx*(L+1)}', positive=True)
     symb_expression, permu, (decoder_fn, try_theta_init) = jaxdecoder(init_x,dx,L)
-    return QuantumAttentionNet(M=1000, num_modes=dx, num_layers=L, decoder_fn=decoder_fn)
+    return QuantumAttentionNet(num_modes=dx, num_layers=L, decoder_fn=decoder_fn)
 
 def test_layers_of_AlCla(quantum_attention_net, dx_L):
     dx=dx_L[0]

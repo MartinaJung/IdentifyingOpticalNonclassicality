@@ -1,7 +1,6 @@
 import os, sys
 import pytest
 import numpy as np
-import perceval as pcvl
 from perceval import *
 
 

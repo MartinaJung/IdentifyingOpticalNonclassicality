@@ -12,7 +12,7 @@ sys.path.append(REPODIR)
 rng = jax.random.PRNGKey(0)
 rng, init_rng = jax.random.split(rng)
 
-from main_DenseDecoder import *
+from main_AlCla import *
 from analyzing_the_model import counting_thetas
 from model_DenseDecoder import *
 
@@ -28,14 +28,8 @@ def test_load_datasets():
             _,_=load_datasets('ds12_fixed')
 
 def test_initialize_model():
-    opt, state, params, QuAttnNet = initialize_model()
-    layer_dims = list(map(int, FLAGS.layer_dims))
-    for idx, l in enumerate(layer_dims[:-1]):
-        if idx==0:
-            jnp.array(params['weights_decoder'][0]).shape == (l,FLAGS.num_encode_layers+1)
-        else:
-            assert jnp.array(params['weights_decoder'][idx]).shape == (l, layer_dims[idx-1])
-            assert jnp.array(params['bias_decoder'][idx]).shape == (l,)
+    opt, state, params, permu, QuAttnNet = initialize_model()
+    assert len(jnp.array(params['theta']))+1==counting_thetas.number_thetas(1,FLAGS.num_encode_layers+1)
 
 @pytest.mark.parametrize("regu, suppress_k",[
     (0.,0.),
@@ -50,16 +44,13 @@ def test_main_training_and_saving(regu, suppress_k):
     elif FLAGS.modes==6:
         current_dataset='ds16_6modes'
     train_ds, test_ds= load_datasets(current_dataset)
-    QuAttnNet = PreSymbolicRegressionNet(num_modes=FLAGS.modes, 
-                                    num_layers=FLAGS.num_encode_layers,
-                                   )
-    params_model = QuAttnNet.init_params([14,4,1],rng,FLAGS.modes,FLAGS.num_encode_layers)['params']
-    opt, state, params, QuAttnNet = initialize_model()
+    opt, state, params, permu, QuAttnNet = initialize_model()
     new_params, state, cl, ncl, loss_train, loss_test=main_training(rng,opt,state,params,QuAttnNet, 20, train_ds, test_ds,regu, suppress_k)
     #print(jax.tree_util.tree_map(lambda x,y: x.shape==y.shape, params, new_params))
-    _=save_encoder_outputs_and_predictions(QuAttnNet, params_model, train_ds, current_dataset, regu, suppress_k,"/Testfile.hdf5")
-    filepath="PolynomialRegression/EncoderOutputsAndModelsPrediction/" \
-        + current_dataset + f"/{FLAGS.num_encode_layers}el/{int(FLAGS.shots/1000)}kshots/"    
-    
+    for key in params:
+        assert jax.tree_util.tree_map(lambda x,y: x.shape==y.shape, params, new_params)[key]
+    save_predictions(new_params,permu,cl, ncl, current_dataset, regu, suppress_k, "Testfile.hdf5")
+    # Check that there is a file
+    filepath=f"saved_params/{current_dataset}/{FLAGS.num_encode_layers}el/{int(FLAGS.shots/1000)}kshots/"
     assert os.path.exists(filepath+"Testfile.hdf5")
     os.remove(filepath+"Testfile.hdf5")

@@ -35,13 +35,11 @@ def test_h5py_ds(ds):
 def test_create_train_state():
     init_x = symbols(f'x:{FLAGS.modes*(FLAGS.num_encode_layers+1)}', positive=True)
     symb_expression, permu, (decoder_fn, try_theta_init) = jaxdecoder(init_x,FLAGS.modes,FLAGS.num_encode_layers)
-    QuAttnNet = QuantumAttentionNet(M=FLAGS.shots, 
-                                    num_modes=FLAGS.modes, 
+    QuAttnNet = QuantumAttentionNet(num_modes=FLAGS.modes, 
                                     num_layers=FLAGS.num_encode_layers,
                                     decoder_fn=decoder_fn)
     
     opt, state, params = create_train_state(init_rng, QuAttnNet,
-                           M = FLAGS.shots,
                            num_modes=FLAGS.modes,
                            num_layers=FLAGS.num_encode_layers,
                            learning_rate=FLAGS.learning_rate)
@@ -68,12 +66,10 @@ def test_hyperparams():
 def optimizer_state():
     init_x = symbols(f'x:{FLAGS.modes*(FLAGS.num_encode_layers+1)}', positive=True)
     symb_expression, permu, (decoder_fn, try_theta_init) = jaxdecoder(init_x,FLAGS.modes,FLAGS.num_encode_layers)
-    QuAttnNet = QuantumAttentionNet(M=FLAGS.shots, 
-                                    num_modes=FLAGS.modes, 
+    QuAttnNet = QuantumAttentionNet(num_modes=FLAGS.modes, 
                                     num_layers=FLAGS.num_encode_layers,
                                     decoder_fn=decoder_fn)
     opt, state, params = create_train_state(init_rng, QuAttnNet,
-                           M = FLAGS.shots,
                            num_modes=FLAGS.modes,
                            num_layers=FLAGS.num_encode_layers,
                            learning_rate=FLAGS.learning_rate)
