@@ -4,4 +4,4 @@ The included Python code enables the setup and training of the algebraic classif
 
 The classifier has an encoder-decoder structure: The encoder learns to compute moments that are relevant for the classification whereas the decoder constructs a polynomial of these moments. As an alternative model, we replaced the algebraic decoder with a dense feed-forward neural network. The respective model is called Dense Decoder in the code.
 
-<img src="./img/architecture.png" alt="architecture" style="height: 256px;"/>
+<img src="./img/architecture.png" alt="architecture" style="height: 300px;"/>
