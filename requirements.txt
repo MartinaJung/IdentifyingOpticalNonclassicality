@@ -10,7 +10,7 @@ jupyter_core==5.8.1
 matplotlib==3.10.6
 matplotlib-base==3.10.6
 matplotlib-inline==0.1.7
-mpi==1.0=mpich
+mpi==1.0
 numpy==2.3.3
 numpy-base==2.3.3
 opt_einsum==3.3.0
