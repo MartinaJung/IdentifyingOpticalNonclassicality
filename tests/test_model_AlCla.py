@@ -9,9 +9,9 @@ SCRIPTPATH = os.path.abspath(__file__)
 REPODIR = os.path.split(os.path.split(SCRIPTPATH)[0])[0]
 sys.path.append(REPODIR)
 
-from analyzing_the_model import counting_thetas
+#from analyzing_the_model import counting_thetas
 from model_AlCla import *
-from polynom_skelleton import *
+from polynom_skelleton import number_thetas
 from sympy import symbols
 from sympy2jax import sympy2jax
 
@@ -42,7 +42,7 @@ def test_polynomial_skelleton(dx,L):
     else:
         init_x = symbols(f'x:{dx*(L+1)}', positive=True)
         symb_expression, permu, (decoder_fn, try_theta_init) = jaxdecoder(init_x,dx,L)
-        assert len(permu) +1 == counting_thetas.number_thetas(dx,L+1)
+        assert len(permu) +1 == number_thetas(dx,L+1)
 
 
 #################################################
@@ -74,7 +74,7 @@ def test_params_init(dx, L):
         params = QuAttnNet.init_params(key, dx,L)
         for i in range(L):
             assert jnp.array(params[f'k{i}']).shape == (dx, dx)
-        assert jnp.array(params['theta']).shape[0]+1 == counting_thetas.number_thetas(dx,L+1)
+        assert jnp.array(params['theta']).shape[0]+1 == number_thetas(dx,L+1)
         assert len(jnp.array(params['amplify']).flatten()) == 1
         assert len(jnp.array(params['intercept']).flatten())==1
 

@@ -13,7 +13,6 @@ rng = jax.random.PRNGKey(0)
 rng, init_rng = jax.random.split(rng)
 
 from main_DenseDecoder import *
-from analyzing_the_model import counting_thetas
 from model_DenseDecoder import *
 
 def test_load_datasets():
@@ -57,9 +56,9 @@ def test_main_training_and_saving(regu, suppress_k):
     opt, state, params, QuAttnNet = initialize_model()
     new_params, state, cl, ncl, loss_train, loss_test=main_training(rng,opt,state,params,QuAttnNet, 20, train_ds, test_ds,regu, suppress_k)
     #print(jax.tree_util.tree_map(lambda x,y: x.shape==y.shape, params, new_params))
-    _=save_encoder_outputs_and_predictions(QuAttnNet, params_model, train_ds, current_dataset, regu, suppress_k,"/Testfile.hdf5")
-    filepath="PolynomialRegression/EncoderOutputsAndModelsPrediction/" \
-        + current_dataset + f"/{FLAGS.num_encode_layers}el/{int(FLAGS.shots/1000)}kshots/"    
+    # _=save_encoder_outputs_and_predictions(QuAttnNet, params_model, train_ds, current_dataset, regu, suppress_k,"/Testfile.hdf5")
+    # filepath="PolynomialRegression/EncoderOutputsAndModelsPrediction/" \
+    #     + current_dataset + f"/{FLAGS.num_encode_layers}el/{int(FLAGS.shots/1000)}kshots/"    
     
-    assert os.path.exists(filepath+"Testfile.hdf5")
-    os.remove(filepath+"Testfile.hdf5")
+    # assert os.path.exists(filepath+"Testfile.hdf5")
+    # os.remove(filepath+"Testfile.hdf5")

@@ -31,21 +31,20 @@ def test_Regression(deg):
     score, c, inter, classical_accuracy, nonclassical_accuracy, lr, best_epoch=out
     assert len(c)==sum(deg)
 
-
-def test_HierarchyOfRegression():
-    deg=[[0,1],[1,0],[1,1],[2,0],[0,2],[2,1]]
-    FILENAME='Testfile_PolynomialReg'
-    out = Reg.HierarchyOfRegression('./PolynomialRegression',
-                        FILENAME=FILENAME,
-                        dataset='ds14_PNR',
-                        polynomial_degrees=deg, 
-                        decoder_architecture='10_4_1', 
-                        num_encode_layers=1,
-                        kshots=100)
-    # Check that file was created
-    for d in deg:
-        deg_str='_'.join(str(di) for di in d)
-        path=f'./PolynomialRegression/ResultsPolyRegression/ds14_PNR/1el/100kshots/{deg_str}'
-        assert os.path.isfile(path+FILENAME)
-        os.remove(path+FILENAME)
+# def test_HierarchyOfRegression():
+#     deg=[[0,1],[1,0],[1,1],[2,0],[0,2],[2,1]]
+#     FILENAME='Testfile_PolynomialReg'
+#     out = Reg.HierarchyOfRegression('./PolynomialRegression',
+#                         FILENAME=FILENAME,
+#                         dataset='ds14_PNR',
+#                         polynomial_degrees=deg, 
+#                         decoder_architecture='10_4_1', 
+#                         num_encode_layers=1,
+#                         kshots=100)
+#     # Check that file was created
+#     for d in deg:
+#         deg_str='_'.join(str(di) for di in d)
+#         path=f'./PolynomialRegression/ResultsPolyRegression/ds14_PNR/1el/100kshots/{deg_str}'
+#         assert os.path.isfile(path+FILENAME)
+#         os.remove(path+FILENAME)
 

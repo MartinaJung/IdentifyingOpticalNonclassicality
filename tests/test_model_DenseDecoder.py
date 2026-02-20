@@ -9,7 +9,6 @@ SCRIPTPATH = os.path.abspath(__file__)
 REPODIR = os.path.split(os.path.split(SCRIPTPATH)[0])[0]
 sys.path.append(REPODIR)
 
-from analyzing_the_model import counting_thetas
 from model_AlCla import *
 from model_DenseDecoder import *
 from polynom_skelleton import *

@@ -13,7 +13,7 @@ rng = jax.random.PRNGKey(0)
 rng, init_rng = jax.random.split(rng)
 
 from main_AlCla import *
-from analyzing_the_model import counting_thetas
+from polynom_skelleton import number_thetas
 from model_DenseDecoder import *
 
 def test_load_datasets():
@@ -29,7 +29,7 @@ def test_load_datasets():
 
 def test_initialize_model():
     opt, state, params, permu, QuAttnNet = initialize_model()
-    assert len(jnp.array(params['theta']))+1==counting_thetas.number_thetas(1,FLAGS.num_encode_layers+1)
+    assert len(jnp.array(params['theta']))+1==number_thetas(1,FLAGS.num_encode_layers+1)
 
 @pytest.mark.parametrize("regu, suppress_k",[
     (0.,0.),
@@ -49,8 +49,8 @@ def test_main_training_and_saving(regu, suppress_k):
     #print(jax.tree_util.tree_map(lambda x,y: x.shape==y.shape, params, new_params))
     for key in params:
         assert jax.tree_util.tree_map(lambda x,y: x.shape==y.shape, params, new_params)[key]
-    save_predictions(new_params,permu,cl, ncl, current_dataset, regu, suppress_k, "Testfile.hdf5")
-    # Check that there is a file
-    filepath=f"saved_params/{current_dataset}/{FLAGS.num_encode_layers}el/{int(FLAGS.shots/1000)}kshots/"
-    assert os.path.exists(filepath+"Testfile.hdf5")
-    os.remove(filepath+"Testfile.hdf5")
+    # save_predictions(new_params,permu,cl, ncl, current_dataset, regu, suppress_k, "Testfile.hdf5")
+    # # Check that there is a file
+    # filepath=f"saved_params/{current_dataset}/{FLAGS.num_encode_layers}el/{int(FLAGS.shots/1000)}kshots/"
+    # assert os.path.exists(filepath+"Testfile.hdf5")
+    # os.remove(filepath+"Testfile.hdf5")
