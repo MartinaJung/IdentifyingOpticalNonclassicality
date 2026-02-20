@@ -72,43 +72,43 @@ def save_train_test_ds_as_hdf5(current_ds:str):
 #
 ######################################
 
-def save_predictions(params:dict,
-                    permu:jnp.array, 
-                    classical_accuracy:jnp.array, 
-                    nonclassical_accuracy:jnp.array, 
-                    current_ds: str, 
-                    regularization: float, 
-                    suppress_k: float, 
-                    *RESULTS_FILENAME:str):
-    doc = {"SHOTS": FLAGS.shots, "MINIBATCH_SIZE": FLAGS.batch_size,
-        "MODES": FLAGS.modes, "LEARNING_RATE": FLAGS.learning_rate,
-        "NUM_ENCODE_LAYERS": FLAGS.num_encode_layers,
-        "REGULARIZATION": regularization, "SUPPRESSING_K": suppress_k}
-    SAVING_PATH = f"saved_params/{current_ds}/{FLAGS.num_encode_layers}el/{int(FLAGS.shots/1000)}kshots/"
-    if len(RESULTS_FILENAME)==0:
-        RESULTS_FILENAME = f"/Results_{current_ds}_RGZN{regularization}_BatchGD_lr{FLAGS.learning_rate}"\
-                + f"_{int(FLAGS.shots/1000)}kshots_BestTrainEpoch.hdf5"
-    else:
-        RESULTS_FILENAME=RESULTS_FILENAME[0]
-    # SAVE OPTIMAL PARAMETERS AND PERFORMANCE
-    with h5py.File(SAVING_PATH + RESULTS_FILENAME, "w") as f:
-        for key in params:
-            if key == 'theta':
-                f.create_dataset(key, data=params[key][np.array(permu)]) # save reshuffled theta
-            else:
-                try:
-                    f.create_dataset(key, data=params[key])
-                except:
-                    for idx, element in enumerate(params[key]):
-                        f.create_dataset(key + "/layer" + str(idx), data=element)
-
-        f.create_dataset("cl_accuracy", data=round(classical_accuracy,4))
-        f.create_dataset("ncl_accuracy", data=round(nonclassical_accuracy,4))
-        f.create_dataset("best_epoch", data=FLAGS.epochs)
-        f.attrs["DIAGONAL_ENCODER"]=FLAGS.diagonal
-        f.attrs.update(doc)
-    print(f'Saved accuracy and best epoch in {RESULTS_FILENAME}')
-    return 0
+#def save_predictions(params:dict,
+#                    permu:jnp.array, 
+#                    classical_accuracy:jnp.array, 
+#                    nonclassical_accuracy:jnp.array, 
+#                    current_ds: str, 
+#                    regularization: float, 
+#                    suppress_k: float, 
+#                    *RESULTS_FILENAME:str):
+#    doc = {"SHOTS": FLAGS.shots, "MINIBATCH_SIZE": FLAGS.batch_size,
+#        "MODES": FLAGS.modes, "LEARNING_RATE": FLAGS.learning_rate,
+#        "NUM_ENCODE_LAYERS": FLAGS.num_encode_layers,
+#        "REGULARIZATION": regularization, "SUPPRESSING_K": suppress_k}
+#    SAVING_PATH = f"saved_params/{current_ds}/{FLAGS.num_encode_layers}el/{int(FLAGS.shots/1000)}kshots/"
+#    if len(RESULTS_FILENAME)==0:
+#        RESULTS_FILENAME = f"/Results_{current_ds}_RGZN{regularization}_BatchGD_lr{FLAGS.learning_rate}"\
+#                + f"_{int(FLAGS.shots/1000)}kshots_BestTrainEpoch.hdf5"
+#    else:
+#        RESULTS_FILENAME=RESULTS_FILENAME[0]
+#    # SAVE OPTIMAL PARAMETERS AND PERFORMANCE
+#    with h5py.File(SAVING_PATH + RESULTS_FILENAME, "w") as f:
+#        for key in params:
+#            if key == 'theta':
+#                f.create_dataset(key, data=params[key][np.array(permu)]) # save reshuffled theta
+#            else:
+#                try:
+#                    f.create_dataset(key, data=params[key])
+#                except:
+#                    for idx, element in enumerate(params[key]):
+#                        f.create_dataset(key + "/layer" + str(idx), data=element)
+#
+#        f.create_dataset("cl_accuracy", data=round(classical_accuracy,4))
+#        f.create_dataset("ncl_accuracy", data=round(nonclassical_accuracy,4))
+#        f.create_dataset("best_epoch", data=FLAGS.epochs)
+#        f.attrs["DIAGONAL_ENCODER"]=FLAGS.diagonal
+#        f.attrs.update(doc)
+#    print(f'Saved accuracy and best epoch in {RESULTS_FILENAME}')
+#    return 0
 
 ######################################
 #
@@ -204,4 +204,3 @@ if __name__ == "__main__":
     #plt.savefig(savename +'.svg')
     plt.show()
     #save_predictions(params,permu,cl_accracy, ncl_accracy, Current_dataset,regularization, suppress_k, *FILENAME)
-    pass
