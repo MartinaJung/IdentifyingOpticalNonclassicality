@@ -53,83 +53,43 @@ def jaxdecoder(x:jnp.array, modes:int, num_encode_layers:int) -> (list, list, jn
         raise ValueError("number of modes and number of encoding layers has to be >=1")
     polys = []   
     p = []
-    if FLAGS.diagonal == True:
-        for l in range(num_encode_layers+1):
-            polys.append(jax_trunc_poly(x,l,modes,num_encode_layers))
-        polys_flattened = np.concatenate(polys).flatten()
-        #print(f'{polys_flattened=}')
-        for l in range(1,num_encode_layers+2):
-            combis = itertools.combinations(range(modes*((num_encode_layers+1)**2)), l)
-            for c in combis:
-                if l == 1:
-                    if polys_flattened[c] > 0:
-                        p.append(polys_flattened[c])
-                else:
-                    if sum([superind2corr_order(m,modes,num_encode_layers) for m in c]) > num_encode_layers+1:
-                        continue
-                    diff = [] 
-                    diff_j = [] 
-                    for b,d in itertools.combinations(c,2):
-                        i1, j1 = superind2row(b,modes,num_encode_layers)
-                        i2, j2 = superind2row(d,modes,num_encode_layers)
-                        diff_j.append(abs(j1-j2))
-                        diff.append(abs(i1-i2)+ abs(j1-j2))
-                    if min(diff) == 0 or max(diff_j) > 0: # make sure, all elements correspond to the same mode
-                        continue
-                    elif sum([superind2corr_order(m,modes,num_encode_layers) for m in c]) <= num_encode_layers+1:
-                        tmp = 1
-                        for ci in c:
-                            tmp *= polys_flattened[ci]
-                        if tmp > 0:
-                            p.append(tmp)
-        #thetas = np.array([0.5+0.001*i for i in range(len(p))])
-        thetas = rng1.uniform(low=-1.0, high=1.0,size=len(p))
-        tmp = np.array(thetas*p)
-        print(f'the monomials read {p}')
-        expression = np.sum(thetas*p, axis=-1)
-        print(f'the expression reads {expression}')
-        perm = []
-        for t in tmp:
-            perm.append(np.where(np.array(expression.args)==t)[0][0])
-        return p, perm, sympy2jax(expression, x)
-    else:
-        for l in range(num_encode_layers+1):
-            polys.append(jax_trunc_poly(x,l,modes,num_encode_layers))
-        polys_flattened = np.concatenate(polys).flatten()
-        for l in range(1,num_encode_layers+2):
-            combis = itertools.combinations(range(modes*((num_encode_layers+1)**2)), l)
-            for c in combis:
-                if l == 1:
-                    if polys_flattened[c] > 0:
-                        p.append(polys_flattened[c])
-                else:
-                    if sum([superind2corr_order(m,modes,num_encode_layers) for m in c]) > num_encode_layers+1:
-                        continue
-                    diff = [] 
-                    for b,d in itertools.combinations(c,2):
-                        i1, j1 = superind2row(b,modes,num_encode_layers)
-                        i2, j2 = superind2row(d,modes,num_encode_layers)
-                        diff.append(abs(i1-i2)+ abs(j1-j2))
-                    if min(diff) == 0: # make sure, to skip diagonal terms
-                        continue
-                    elif sum([superind2corr_order(m,modes,num_encode_layers) for m in c]) <= num_encode_layers+1:
-                        tmp = 1
-                        for ci in c:
-                            tmp *= polys_flattened[ci]
-                        if tmp > 0:
-                            p.append(tmp)
-        thetas = np.array([0.5+0.001*i for i in range(len(p))])
-        thetas = rng1.uniform(low=-1.0, high=1.0,size=len(p))
-        
-        tmp = np.array(thetas*p)
-        expression = np.sum(thetas*p, axis=-1)
-        perm = []
-        print(f'the outputed monomials read {p}\n')
-        print(f'the expression reads {expression}')
-        # function that bookkeeps the order of the thetas for any initialization
-        for t in tmp:
-            perm.append(np.where(np.array(expression.args)==t)[0][0])
-        return p, perm, sympy2jax(expression, x)
+    for l in range(num_encode_layers+1):
+        polys.append(jax_trunc_poly(x,l,modes,num_encode_layers))
+    polys_flattened = np.concatenate(polys).flatten()
+    for l in range(1,num_encode_layers+2):
+        combis = itertools.combinations(range(modes*((num_encode_layers+1)**2)), l)
+        for c in combis:
+            if l == 1:
+                if polys_flattened[c] > 0:
+                    p.append(polys_flattened[c])
+            else:
+                if sum([superind2corr_order(m,modes,num_encode_layers) for m in c]) > num_encode_layers+1:
+                    continue
+                diff = [] 
+                for b,d in itertools.combinations(c,2):
+                    i1, j1 = superind2row(b,modes,num_encode_layers)
+                    i2, j2 = superind2row(d,modes,num_encode_layers)
+                    diff.append(abs(i1-i2)+ abs(j1-j2))
+                if min(diff) == 0: # make sure, to skip diagonal terms
+                    continue
+                elif sum([superind2corr_order(m,modes,num_encode_layers) for m in c]) <= num_encode_layers+1:
+                    tmp = 1
+                    for ci in c:
+                        tmp *= polys_flattened[ci]
+                    if tmp > 0:
+                        p.append(tmp)
+    thetas = np.array([0.5+0.001*i for i in range(len(p))])
+    thetas = rng1.uniform(low=-1.0, high=1.0,size=len(p))
+    
+    tmp = np.array(thetas*p)
+    expression = np.sum(thetas*p, axis=-1)
+    perm = []
+    print(f'the outputed monomials read {p}\n')
+    print(f'the expression reads {expression}')
+    # function that bookkeeps the order of the thetas for any initialization
+    for t in tmp:
+        perm.append(np.where(np.array(expression.args)==t)[0][0])
+    return p, perm, sympy2jax(expression, x)
 
 def number_thetas(dx, L):
     num_single = 0
