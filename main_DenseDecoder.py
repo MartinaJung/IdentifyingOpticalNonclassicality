@@ -66,35 +66,35 @@ def save_train_test_ds_as_hdf5(current_ds:str):
 #
 ######################################
 
-def save_encoder_outputs_and_predictions(QuAttnNet, params, train_ds, current_ds, regularization, suppress_k, *FILENAME):
-    doc = {"SHOTS": FLAGS.shots, "MINIBATCH_SIZE": FLAGS.batch_size,
-        "MODES": FLAGS.modes, "LEARNING_RATE": FLAGS.learning_rate,
-        "NUM_ENCODE_LAYERS": FLAGS.num_encode_layers,
-        "REGULARIZATION": regularization, "SUPPRESSING_K": suppress_k}
-    doc.update({"DECODER_LAYER_DIMS": FLAGS.layer_dims})
-    layer_dims = '_'.join(FLAGS.layer_dims)
-    enc_outputs, preds_unnorm, true_labels = get_predictions_and_encoder_outputs(QuAttnNet,params, train_ds, regularization, suppress_k)
-    SAVING_PATH = "PolynomialRegression/EncoderOutputsAndModelsPrediction/" \
-            + current_ds + f"/{FLAGS.num_encode_layers}el/{int(FLAGS.shots/1000)}kshots"
-    if len(FILENAME) == 0:
-        FILENAME = f"/InputForSymbolicRegressionRGZN{regularization}_M{FLAGS.shots}_epochs{FLAGS.epochs}"\
-            + f"_BatchGD_lr{FLAGS.learning_rate}_{layer_dims}.hdf5"
-    else:
-        FILENAME=FILENAME[0]
-    with h5py.File(SAVING_PATH + FILENAME, "w") as f:
-        f.create_dataset("encoder_corrs", data=enc_outputs)
-        f.create_dataset("predictions", data=preds_unnorm)
-        f.create_dataset("true_labels", data=true_labels)
-        f.create_dataset("best_epoch", data=FLAGS.epochs)
-        f.attrs["DIAGONAL_ENCODER"]=FLAGS.diagonal
-        f.attrs.update(doc)
-    print('saved inputs for polynomial regression in', FILENAME)
-
-    SAVING_PATH = "saved_params/" + current_ds + f"/{FLAGS.num_encode_layers}el/{int(FLAGS.shots/1000)}kshots" \
-            + "/dense_decoder"
-    RESULTS_FILENAME = f"/Results_{current_ds}_RGZN{regularization}_BatchGD_lr{FLAGS.learning_rate}"\
-            + f"_{int(FLAGS.shots/1000)}kshots_BestTrainEpoch_{layer_dims}.hdf5"
-    return 0
+#def save_encoder_outputs_and_predictions(QuAttnNet, params, train_ds, current_ds, regularization, suppress_k, *FILENAME):
+#    doc = {"SHOTS": FLAGS.shots, "MINIBATCH_SIZE": FLAGS.batch_size,
+#        "MODES": FLAGS.modes, "LEARNING_RATE": FLAGS.learning_rate,
+#        "NUM_ENCODE_LAYERS": FLAGS.num_encode_layers,
+#        "REGULARIZATION": regularization, "SUPPRESSING_K": suppress_k}
+#    doc.update({"DECODER_LAYER_DIMS": FLAGS.layer_dims})
+#    layer_dims = '_'.join(FLAGS.layer_dims)
+#    enc_outputs, preds_unnorm, true_labels = get_predictions_and_encoder_outputs(QuAttnNet,params, train_ds, regularization, suppress_k)
+#    SAVING_PATH = "PolynomialRegression/EncoderOutputsAndModelsPrediction/" \
+#            + current_ds + f"/{FLAGS.num_encode_layers}el/{int(FLAGS.shots/1000)}kshots"
+#    if len(FILENAME) == 0:
+#        FILENAME = f"/InputForSymbolicRegressionRGZN{regularization}_M{FLAGS.shots}_epochs{FLAGS.epochs}"\
+#            + f"_BatchGD_lr{FLAGS.learning_rate}_{layer_dims}.hdf5"
+#    else:
+#        FILENAME=FILENAME[0]
+#    with h5py.File(SAVING_PATH + FILENAME, "w") as f:
+#        f.create_dataset("encoder_corrs", data=enc_outputs)
+#        f.create_dataset("predictions", data=preds_unnorm)
+#        f.create_dataset("true_labels", data=true_labels)
+#        f.create_dataset("best_epoch", data=FLAGS.epochs)
+#        f.attrs["DIAGONAL_ENCODER"]=FLAGS.diagonal
+#        f.attrs.update(doc)
+#    print('saved inputs for polynomial regression in', FILENAME)
+#
+#    SAVING_PATH = "saved_params/" + current_ds + f"/{FLAGS.num_encode_layers}el/{int(FLAGS.shots/1000)}kshots" \
+#            + "/dense_decoder"
+#    RESULTS_FILENAME = f"/Results_{current_ds}_RGZN{regularization}_BatchGD_lr{FLAGS.learning_rate}"\
+#            + f"_{int(FLAGS.shots/1000)}kshots_BestTrainEpoch_{layer_dims}.hdf5"
+#    return 0
 
 def save_predictions(params:dict,
                     permu:jnp.array, 
