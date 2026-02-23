@@ -10,7 +10,7 @@ The code enables the setup and training of the algebraic classifier, a machine l
 ### Installation
 
 First, create an environment with
-'''
+```
 conda env create -f ml_nonclassicality.yaml 
-'''
+```
 Then, close the git repository with
