@@ -3,12 +3,12 @@
 # Learning to detect optical nonclassicality
 This repository provides tools for analyzing optical nonclassicality based on the Glauber–Sudarshan P representation.
 
-The code enables the setup and training of the algebraic classifier, a machine learning–based method developed to identify nonclassicality from data. Importantly, the learned nonclassicality criterion can be extracted after training. The analytcal formula represents an **indicator** for whether a state is nonclassical --- not be confused with a sufficient nonclassicality witness.
+The code enables the setup and training of the algebraic classifier, a machine learning–based method developed to identify nonclassicality from data. Importantly, the learned nonclassicality criterion can be extracted after training. The analytical formula then represents an indicator for whether a state is nonclassical - not be confused with a sufficient nonclassicality witness.
 
-<img src="./img/VisualAbstract.png" alt="Visual abstract" style="height: 300px;"/>
+<img src="./img/VisualAbstract.png" alt="Visual abstract" style="height: 250px;"/>
 
 ---------------------------------------------------------------------------
-### Installation
+## Installation
 
 First, create an environment with
 ```
