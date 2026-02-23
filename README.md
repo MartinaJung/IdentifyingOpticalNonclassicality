@@ -7,8 +7,7 @@ This repository contains code for the setup and training of the algebraic classi
 
 <img src="./img/VisualAbstract.png" alt="Visual abstract" style="height: 250px;"/>
 
----------------------------------------------------------------------------
-## Usage
+# Usage
 
 First, close the git repository and navigate to the folder with
 ```
