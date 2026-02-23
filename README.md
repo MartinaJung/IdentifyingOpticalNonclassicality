@@ -1,6 +1,4 @@
-[![codecov](https://codecov.io/gh/MartinaJung/IdentifyingOpticalNonclassicality/graph/badge.svg?token=KVAJBASKAX)](https://codecov.io/gh/MartinaJung/IdentifyingOpticalNonclassicality)
-
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.18647273.svg)](https://doi.org/10.5281/zenodo.18647273)
+[![codecov](https://codecov.io/gh/MartinaJung/IdentifyingOpticalNonclassicality/graph/badge.svg?token=KVAJBASKAX)](https://codecov.io/gh/MartinaJung/IdentifyingOpticalNonclassicality) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.18647273.svg)](https://doi.org/10.5281/zenodo.18647273)
 
 # Learning to detect optical nonclassicality
 This repository provides tools for analyzing optical nonclassicality based on the Glauber–Sudarshan P representation, a quasiprobability distribution that describes the quantum state of light in terms of coherent states. Classical optical fields correspond to positive, well-behaved functions, while nonclassical states exhibit non-positive or singular functions, revealing genuinely quantum properties such as squeezing, antibunching, or entanglement.
