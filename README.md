@@ -27,7 +27,7 @@ Let's imagine, you already have a dataset consisting of $M$ measurement samples 
 $$\left\lbrace x_\nu^\alpha\right\rbrace_{\nu=1,...,d_x}^{\alpha=1,...,M}$$
 
 with $d_x$ being the number of modes and $M$ the number of measurement samples per state. 
-Let's assume, you have $3$ modes and $1000$ samples per state and saved the dataset with the name "ds1_test" in your *dataset* subfolder. In order to setup and train the algebraic classifier, edit the respective hyperparameters in the file *hyperparams.py*.
+Let's assume, you have $3$ modes and $1000$ samples per state and saved the dataset with the name "ds1_test" in your *datasets* subfolder. First, edit the respective hyperparameters in the file *hyperparams.py*.
 
 Then, activate your environment and run the code
 ```
