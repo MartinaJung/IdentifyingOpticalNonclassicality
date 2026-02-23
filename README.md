@@ -10,11 +10,13 @@ This repository contains code for the setup and training of the algebraic classi
 ---------------------------------------------------------------------------
 ## Usage
 
-First, create an environment with
+First, close the git repository and navigate to the folder with
+```
+gt clone https://github.com/MartinaJung/IdentifyingOpticalNonclassicality.git
+cd IdentifyingOpticalNonclassicality
+```
+Then, create create an environment with
 ```
 conda env create -f ml_nonclassicality.yaml 
 ```
-Then, close the git repository with
-```
-gt clone https://github.com/MartinaJung/IdentifyingOpticalNonclassicality.git
-```
+and you are ready to use the library!
