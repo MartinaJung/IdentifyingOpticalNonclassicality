@@ -15,3 +15,6 @@ First, create an environment with
 conda env create -f ml_nonclassicality.yaml 
 ```
 Then, close the git repository with
+```
+gt clone https://github.com/MartinaJung/IdentifyingOpticalNonclassicality.git
+```
