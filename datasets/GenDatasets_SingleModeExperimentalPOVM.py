@@ -136,7 +136,7 @@ def SampleNonClassicalStates(detector_type:str, shots_per_state:int, abs_path:st
         _, next_samples = ClickDistr(detector_type, 'Squeezed', ampl_squeezed, shots_per_state, abs_path)
         samples = np.concatenate((samples, next_samples))
     for ampl_pats in pats_config:
-        _, next_samples = ClickDistr(detector_type, 'PATS', ampl_squeezed, shots_per_state, abs_path)
+        _, next_samples = ClickDistr(detector_type, 'PATS', ampl_pats, shots_per_state, abs_path)
         samples = np.concatenate((samples, next_samples))
     data = {'images': samples, 'labels': np.ones(np.shape(samples)[0])}
     return data
