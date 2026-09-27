@@ -16,6 +16,7 @@ pip==26.0.1
 scikit-learn==1.8.0
 scipy==1.17.0
 sympy==1.14.0
+thewalrus>=0.17.0
 wheel==0.46.3
 
 certifi==2025.10.5
