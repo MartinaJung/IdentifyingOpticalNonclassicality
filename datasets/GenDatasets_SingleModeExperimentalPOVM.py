@@ -39,7 +39,8 @@ def ProbDistr1Mode(detector_type:str, species:str, ampl:float) -> np.array:
     elif species == 'Thermal':
         p = np.array([(1/(1+ampl))*(ampl/(1+ampl))**c if (1/(1+ampl))*(ampl/(1+ampl))**c > 1e-15 else 0. for c in range(cutoff) ])
     elif species == 'PATS':
-        p = np.array([c*(ampl**(c-1))/((1+ampl)**(c+1)) if c*(ampl**(c-1))/((1+ampl)**(c+1)) > 1e-15 else 0. for c in range(cutoff) ])
+        p = np.array([c*(ampl**(c-1))/((1+ampl)**(c+1)) if c*(ampl**(c-1))/((1+ampl)**(c+1)) > 1e-15 else 0. for c in range(1,cutoff) ])
+        p = np.pad(p, (1,0), 'constant', constant_values=(0.,0.))
     else:
         raise Exception('Please decide for a species which is either \'Coherent\',\'Thermal\', \'Squeezed\' or \'PATS\'')
     return p
