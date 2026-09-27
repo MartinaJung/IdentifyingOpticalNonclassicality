@@ -1,5 +1,4 @@
 name: Test and upload coverage
-
 on: [pull_request]
 
 jobs:
